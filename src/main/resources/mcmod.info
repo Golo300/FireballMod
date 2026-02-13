@@ -1,6 +1,6 @@
 [
 {
-  "modid": "fireballmode",
+  "modid": "fireballmod",
   "name": "Fireball Tank Mod",
   "description": "Cool mod for better zoom and aim on hypixel bedwars.",
   "version": "${version}",
