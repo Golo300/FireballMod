@@ -8,7 +8,7 @@ public class ZoomKeybind {
     public static KeyBinding zoomKey;
 
     public static void register() {
-        zoomKey = new KeyBinding("key.fireballmod.zoom", Keyboard.KEY_C, "Fireball Mod");
+        zoomKey = new KeyBinding("Zoom", Keyboard.KEY_C, FireballMod.NAME);
         ClientRegistry.registerKeyBinding(zoomKey);
     }
 }
