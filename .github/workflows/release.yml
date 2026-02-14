@@ -1,0 +1,58 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '8'
+          cache: 'gradle'
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Build with Gradle
+        run: ./gradlew build
+      
+      - name: Find JAR file
+        id: find_jar
+        run: |
+          JAR_FILE=$(find build/libs -name "*.jar" ! -name "*-sources.jar" ! -name "*-dev.jar" -type f | head -n 1)
+          echo "jar_file=$JAR_FILE" >> $GITHUB_OUTPUT
+          echo "jar_name=$(basename $JAR_FILE)" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.find_jar.outputs.jar_file }}
+          body: |
+            ## FireballMod ${{ github.ref_name }}
+            
+            **Minecraft Version:** 1.8.9
+            
+            ### Changes
+            ${{ github.event.head_commit.message }}
+            
+            ### Installation
+            1. Download the JAR file below
+            2. Place it in your `.minecraft/mods` folder
+            3. Start Minecraft with Forge in version 1.8.9
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
