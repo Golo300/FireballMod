@@ -52,7 +52,6 @@ public class CameraShakeHandler {
 
         if (heldItem != null && heldItem.getItem() == Items.fire_charge && zoomCondition()) {
             triggerCameraShake();
-            ZoomHandler.shotsFired += 1;
 
             player.playSound("random.explode", 3.0F, 0.4F);
             player.playSound("mob.zombie.metal", 2.0F, 0.3F);

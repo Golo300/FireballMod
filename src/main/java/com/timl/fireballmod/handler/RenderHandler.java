@@ -3,11 +3,10 @@ package com.timl.fireballmod.handler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
-
-import static com.timl.fireballmod.handler.ZoomHandler.shotsFired;
 
 public class RenderHandler {
 
@@ -50,10 +49,11 @@ public class RenderHandler {
 
 
     public void drawShotCounter(Minecraft mc, int screenWidth) {
+
         int padding = COUNTER_PADDING;
         int textOffset = COUNTER_TEXT_OFFSET;
 
-        String shotText = String.valueOf(shotsFired);
+        String shotText = String.valueOf(countFireballs(mc.thePlayer));
         int textWidth = mc.fontRendererObj.getStringWidth(shotText);
         int totalWidth = COUNTER_ICON_SIZE + (textOffset / 2) + textWidth;
 
@@ -82,4 +82,15 @@ public class RenderHandler {
 
         mc.fontRendererObj.drawString(shotText, x + textOffset, y + 4, COUNTER_TEXT_COLOR);
     }
+
+    private int countFireballs(EntityPlayer player) {
+        ItemStack heldItem = player.getHeldItem();
+
+        if (heldItem != null && heldItem.getItem() == Items.fire_charge) {
+            return heldItem.stackSize;
+        }
+
+        return 0;
+    }
+
 }

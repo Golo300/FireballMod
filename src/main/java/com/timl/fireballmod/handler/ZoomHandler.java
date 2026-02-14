@@ -27,8 +27,6 @@ public class ZoomHandler {
     private static float currentZoom = 20.0F;
     private static final int YOFFSET = 3;
 
-    public static int shotsFired = 0;
-
     private int savedHotbarSlot = -1;
     private float originalSensitivity = -1.0F;
 
@@ -133,8 +131,6 @@ public class ZoomHandler {
         renderHandler.drawDistanceInfo(mc, screenWidth, screenHeight);
         renderHandler.drawShotCounter(mc, screenWidth);
     }
-
-
 
     public static boolean zoomCondition() {
         return zoomKey.isKeyDown();
