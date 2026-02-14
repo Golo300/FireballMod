@@ -16,9 +16,9 @@ import static com.timl.fireballmod.keybinding.ZoomKeybind.zoomKey;
 
 public class ZoomHandler {
 
-    public static final float MIN_ZOOM = 2.0F;
+    public static final float MIN_ZOOM = 1.0F;
     public static final float MAX_ZOOM = 60.0F;
-    public static final float ZOOM_STEP = 4.0F;
+    public static final float ZOOM_STEP = 10.0F;
     public static float currentZoom = 20.0F;
 
     public static final int YOFFSET = 3;
@@ -52,11 +52,11 @@ public class ZoomHandler {
         if (scroll != 0) {
 
             if (scroll > 0) {
+                if (currentZoom > MIN_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.5F);
                 currentZoom = Math.max(MIN_ZOOM, currentZoom - ZOOM_STEP);
-                mc.thePlayer.playSound("random.click", 0.3F, 1.5F);
             } else {
+                if (currentZoom < MAX_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.2F);
                 currentZoom = Math.min(MAX_ZOOM, currentZoom + ZOOM_STEP);
-                mc.thePlayer.playSound("random.click", 0.3F, 1.2F);
             }
         }
     }
@@ -93,6 +93,8 @@ public class ZoomHandler {
         int screenWidth = sr.getScaledWidth();
         int imageSize = sr.getScaledHeight();
         int xPos = (screenWidth - imageSize) / 2;
+
+        Gui.drawRect(0, 0, screenWidth, YOFFSET, 0xFF000000);
 
         Gui.drawRect(0, 0, xPos, imageSize, 0xFF000000);
         Gui.drawRect(xPos + imageSize, 0, screenWidth, imageSize, 0xFF000000);
