@@ -29,6 +29,7 @@ public class ZoomHandler {
     public static final int YOFFSET = 3;
 
     private int savedHotbarSlot = -1;
+    private float originalSensitivity = -1.0F;
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
@@ -42,9 +43,22 @@ public class ZoomHandler {
                 savedHotbarSlot = mc.thePlayer.inventory.currentItem;
             }
 
+            if (originalSensitivity == -1.0F) {
+                originalSensitivity = mc.gameSettings.mouseSensitivity;
+            }
+
+            float zoomFactor = currentZoom / MAX_ZOOM;
+            float reducedSensitivity = originalSensitivity * zoomFactor;
+            mc.gameSettings.mouseSensitivity = Math.max(0.0001F, reducedSensitivity);
+
             mc.thePlayer.inventory.currentItem = savedHotbarSlot;
         } else {
             savedHotbarSlot = -1;
+
+            if (originalSensitivity != -1.0F) {
+                mc.gameSettings.mouseSensitivity = originalSensitivity;
+                originalSensitivity = -1.0F;
+            }
         }
     }
 
