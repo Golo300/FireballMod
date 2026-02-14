@@ -1,5 +1,6 @@
-package com.timl.fireballmod;
+package com.timl.fireballmod.handler;
 
+import com.timl.fireballmod.FireballMod;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
@@ -8,11 +9,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
 
-import net.minecraft.init.Items;
-
-import static com.timl.fireballmod.ZoomKeybind.zoomKey;
+import static com.timl.fireballmod.keybinding.ZoomKeybind.zoomKey;
 
 public class ZoomHandler {
 
@@ -49,8 +47,7 @@ public class ZoomHandler {
         ScaledResolution sr = new ScaledResolution(mc);
 
         int screenWidth = sr.getScaledWidth();
-        int screenHeight = sr.getScaledHeight();
-        int imageSize = screenHeight;
+        int imageSize = sr.getScaledHeight();
         int xPos = (screenWidth - imageSize) / 2;
 
         Gui.drawRect(0, 0, xPos, imageSize, 0xFF000000);
@@ -58,18 +55,15 @@ public class ZoomHandler {
 
         mc.getTextureManager().bindTexture(new ResourceLocation(FireballMod.MODID, "textures/gui/scope.png"));
         Gui.drawModalRectWithCustomSizedTexture(
-                xPos, 0,
+                xPos, YOFFSET,
                 0, 0,
                 imageSize, imageSize,
                 imageSize, imageSize
         );
     }
 
-    private boolean zoomCondition() {
-        Minecraft mc = Minecraft.getMinecraft();
-        ItemStack held = mc.thePlayer.getCurrentEquippedItem();
-
-        return (held != null && held.getItem() == Items.fire_charge && zoomKey.isKeyDown());
+    public static boolean zoomCondition() {
+        return zoomKey.isKeyDown();
     }
 
 }
