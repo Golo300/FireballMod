@@ -3,6 +3,7 @@ package com.timl.fireballmod.handler;
 import com.timl.fireballmod.FireballMod;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -20,6 +21,10 @@ public class ZoomHandler {
     public static final float MAX_ZOOM = 60.0F;
     public static final float ZOOM_STEP = 10.0F;
     public static float currentZoom = 20.0F;
+
+    public static int BLACK = 0xFF000000;
+    public static int GRAY = 0x88000000;
+    public static int GREEN = 0x00FF00;
 
     public static final int YOFFSET = 3;
 
@@ -91,13 +96,14 @@ public class ZoomHandler {
         ScaledResolution sr = new ScaledResolution(mc);
 
         int screenWidth = sr.getScaledWidth();
+        int screenHeight = sr.getScaledHeight();
         int imageSize = sr.getScaledHeight();
         int xPos = (screenWidth - imageSize) / 2;
 
-        Gui.drawRect(0, 0, screenWidth, YOFFSET, 0xFF000000);
+        Gui.drawRect(0, 0, screenWidth, YOFFSET, BLACK);
 
-        Gui.drawRect(0, 0, xPos, imageSize, 0xFF000000);
-        Gui.drawRect(xPos + imageSize, 0, screenWidth, imageSize, 0xFF000000);
+        Gui.drawRect(0, 0, xPos, imageSize, BLACK);
+        Gui.drawRect(xPos + imageSize, 0, screenWidth, imageSize, BLACK);
 
         mc.getTextureManager().bindTexture(new ResourceLocation(FireballMod.MODID, "textures/gui/scope.png"));
         Gui.drawModalRectWithCustomSizedTexture(
@@ -106,6 +112,32 @@ public class ZoomHandler {
                 imageSize, imageSize,
                 imageSize, imageSize
         );
+
+        drawDistanceInfo(mc, screenWidth, screenHeight);
+    }
+
+    private void drawDistanceInfo(Minecraft mc, int screenWidth, int screenHeight) {
+        String distanceText;
+        MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(200.0D, 1.0F);
+
+        if (rayTrace != null && rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            double dx = mc.thePlayer.posX - (rayTrace.getBlockPos().getX() + 0.5);
+            double dy = mc.thePlayer.posY - (rayTrace.getBlockPos().getY() + 0.5);
+            double dz = mc.thePlayer.posZ - (rayTrace.getBlockPos().getZ() + 0.5);
+            double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            distanceText = String.format("%.1f m", distance);
+        } else {
+            distanceText = "No Target";
+        }
+
+        int textWidth = mc.fontRendererObj.getStringWidth(distanceText);
+        int x = (screenWidth - textWidth) / 2;
+        int y = screenHeight - 30;
+
+        Gui.drawRect(x - 4, y - 2, x + textWidth + 4, y + 10, GRAY);
+
+        mc.fontRendererObj.drawString(distanceText, x, y, GREEN);
     }
 
     public static boolean zoomCondition() {
