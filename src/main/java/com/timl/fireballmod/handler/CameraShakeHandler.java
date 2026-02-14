@@ -13,33 +13,35 @@ import static com.timl.fireballmod.handler.ZoomHandler.zoomCondition;
 
 public class CameraShakeHandler {
 
+    public final static float MAX_SHAKE = 2.0f;
+
     private final Random random = new Random();
-    private float shakeIntensity = 0f;
+    private float currentShakeIntensity = 0f;
     private long lastShakeTime = 0;
 
     public void triggerCameraShake() {
-        shakeIntensity = 1.0f;
+        currentShakeIntensity = MAX_SHAKE;
         lastShakeTime = System.currentTimeMillis();
     }
 
     @SubscribeEvent
     public void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
-        if (shakeIntensity > 0) {
-            long currentTime = System.currentTimeMillis();
-            long elapsed = currentTime - lastShakeTime;
+        if (currentShakeIntensity <= 0) return;
 
-            shakeIntensity = Math.max(0, 1.0f - (elapsed / 500f));
+        long currentTime = System.currentTimeMillis();
+        long elapsed = currentTime - lastShakeTime;
 
-            if (shakeIntensity > 0) {
-                float shakeYaw = (random.nextFloat() - 0.5f) * 15f * shakeIntensity;
-                float shakePitch = (random.nextFloat() - 0.5f) * 15f * shakeIntensity;
-                float shakeRoll = (random.nextFloat() - 0.5f) * 8f * shakeIntensity;
+        currentShakeIntensity = Math.max(0, MAX_SHAKE - (elapsed / 500f));
 
-                event.yaw += shakeYaw;
-                event.pitch += shakePitch;
-                event.roll += shakeRoll;
-            }
-        }
+        if (currentShakeIntensity <= 0) return;
+
+        float shakeYaw = (random.nextFloat() - 0.5f) * 15f * currentShakeIntensity;
+        float shakePitch = (random.nextFloat() - 0.5f) * 15f * currentShakeIntensity;
+        float shakeRoll = (random.nextFloat() - 0.5f) * 8f * currentShakeIntensity;
+
+        event.yaw += shakeYaw;
+        event.pitch += shakePitch;
+        event.roll += shakeRoll;
     }
 
     @SubscribeEvent
