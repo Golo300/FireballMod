@@ -22,6 +22,7 @@
         buildInputs = with pkgs; [
           jdk8
           gradle
+          jetbrains.idea
         ] ++ lwjglLibs;
 
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath lwjglLibs;
