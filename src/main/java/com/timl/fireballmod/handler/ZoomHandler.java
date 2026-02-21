@@ -1,18 +1,14 @@
 package com.timl.fireballmod.handler;
 
+import static com.timl.fireballmod.FireballMod.LOGGER;
 import com.timl.fireballmod.FireballMod;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -20,11 +16,13 @@ import static com.timl.fireballmod.handler.RenderHandler.BLACK;
 import static com.timl.fireballmod.keybinding.ZoomKeybind.zoomKey;
 
 public class ZoomHandler {
-
     private static final float MIN_ZOOM = 1.0F;
     private static final float MAX_ZOOM = 60.0F;
-    private static final float ZOOM_STEP = 10.0F;
+    private static final float ZOOM_STEP = 5.0F;
+    private static float targetZoom = 20.0F;
     private static float currentZoom = 20.0F;
+    private static final float ZOOM_SMOOTHING = 0.25F;
+
     private static final int YOFFSET = 3;
 
     private int savedHotbarSlot = -1;
@@ -39,23 +37,25 @@ public class ZoomHandler {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer == null) return;
 
+        if (Math.abs(currentZoom - targetZoom) > 0.01F) {
+            currentZoom += (targetZoom - currentZoom) * ZOOM_SMOOTHING;
+        } else {
+            currentZoom = targetZoom;
+        }
+
         if (zoomCondition()) {
             if (savedHotbarSlot == -1) {
                 savedHotbarSlot = mc.thePlayer.inventory.currentItem;
             }
-
             if (originalSensitivity == -1.0F) {
                 originalSensitivity = mc.gameSettings.mouseSensitivity;
             }
-
             float zoomFactor = currentZoom / MAX_ZOOM;
             float reducedSensitivity = originalSensitivity * zoomFactor;
             mc.gameSettings.mouseSensitivity = Math.max(0.0001F, reducedSensitivity);
-
             mc.thePlayer.inventory.currentItem = savedHotbarSlot;
         } else {
             savedHotbarSlot = -1;
-
             if (originalSensitivity != -1.0F) {
                 mc.gameSettings.mouseSensitivity = originalSensitivity;
                 originalSensitivity = -1.0F;
@@ -66,25 +66,27 @@ public class ZoomHandler {
     @SubscribeEvent
     public void onMouseScroll(InputEvent.MouseInputEvent event) {
         if (!zoomCondition()) return;
-
         Minecraft mc = Minecraft.getMinecraft();
         int scroll = org.lwjgl.input.Mouse.getEventDWheel();
         if (scroll != 0) {
-
             if (scroll > 0) {
-                if (currentZoom > MIN_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.5F);
-                currentZoom = Math.max(MIN_ZOOM, currentZoom - ZOOM_STEP);
+                if (targetZoom > MIN_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.5F);
+                targetZoom = Math.max(MIN_ZOOM, targetZoom - ZOOM_STEP);
             } else {
-                if (currentZoom < MAX_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.2F);
-                currentZoom = Math.min(MAX_ZOOM, currentZoom + ZOOM_STEP);
+                if (targetZoom < MAX_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.2F);
+                targetZoom = Math.min(MAX_ZOOM, targetZoom + ZOOM_STEP);
             }
+
+            LOGGER.info("Zoom changed: {}", targetZoom);
         }
     }
 
     @SubscribeEvent
     public void onFov(EntityViewRenderEvent.FOVModifier event) {
         if (!zoomCondition()) return;
-        event.setFOV(currentZoom);
+
+        float mappedZoom = mapZoom(currentZoom);
+        event.setFOV(mappedZoom);
     }
 
     @SubscribeEvent
@@ -134,5 +136,13 @@ public class ZoomHandler {
 
     public static boolean zoomCondition() {
         return zoomKey.isKeyDown();
+    }
+
+    private float mapZoom(float linearZoom) {
+        float min = MIN_ZOOM;
+        float max = MAX_ZOOM;
+
+        float t = (linearZoom - min) / (max - min);
+        return min * (float)Math.pow(max / min, t);
     }
 }
