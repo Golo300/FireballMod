@@ -5,6 +5,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(
         modid = FireballMod.MODID,
@@ -17,6 +19,7 @@ public class FireballMod {
     public static final String MODID = "fireballmod";
     public static final String NAME = "Fireball Tank Mod";
     public static final String VERSION = "1.5.0";
+    public static final Logger LOGGER = LogManager.getLogger(MODID);
 
     @Mod.Instance
     public static FireballMod instance;
