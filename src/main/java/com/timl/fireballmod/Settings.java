@@ -4,6 +4,7 @@ import com.timl.fireballmod.handler.CameraShakeHandler;
 import com.timl.fireballmod.handler.ZoomHandler;
 import jdk.jfr.internal.consumer.RecordingInput;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,9 +18,9 @@ public class Settings {
     private float maxShake = CameraShakeHandler.DEFAULT_SHAKE;
 
     private final Configuration config;
-    private final net.minecraftforge.common.config.Property propSmoothing;
-    private final net.minecraftforge.common.config.Property propZoomStep;
-    private final net.minecraftforge.common.config.Property propMaxShake;
+    private final Property propSmoothing;
+    private final Property propZoomStep;
+    private final Property propMaxShake;
 
     public Settings(Configuration config) {
         this.config = config;

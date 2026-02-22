@@ -18,7 +18,8 @@
         libGL
       ];
     in {
-      devShells.${system}.default = pkgs.mkShell {
+      devShells.${system} = {
+        default = pkgs.mkShell {
         buildInputs = with pkgs; [
           jdk8
           gradle
@@ -27,8 +28,20 @@
 
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath lwjglLibs;
 
-        # optional, aber hilft bei Wayland
         _JAVA_AWT_WM_NONREPARENTING = "1";
-      };
+        };
+
+        oss = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              jdk8
+              gradle
+              jetbrains.idea-oss
+            ] ++ lwjglLibs;
+
+            LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath lwjglLibs;
+
+            _JAVA_AWT_WM_NONREPARENTING = "1";
+        };
+    };
     };
 }
