@@ -16,19 +16,30 @@ import static com.timl.fireballmod.handler.RenderHandler.BLACK;
 import static com.timl.fireballmod.keybinding.ZoomKeybind.zoomKey;
 
 public class ZoomHandler {
-    private static final float MIN_ZOOM = 1.0F;
-    private static final float MAX_ZOOM = 60.0F;
-    private static final float ZOOM_STEP = 5.0F;
+    private static final int Y_OFFSET = 3;
+    public static final float MIN_ZOOM = 1.0F;
+    public static final float MAX_ZOOM = 60.0F;
+    public static final float MIN_ZOOM_STEP = 1.0F;
+    public static final float MAX_ZOOM_STEP = 30.0F;
+    public static final float DEFAULT_ZOOM_STEP = 5.0F;
+    public static final float MIN_ZOOM_SMOOTHING = 1.0F;
+    public static final float MAX_ZOOM_SMOOTHING = 0.05F;
+    public static final float DEFAULT_ZOOM_SMOOTHING = 0.25F;
+    private static float zoomStep = DEFAULT_ZOOM_STEP;
+    private static float zoomSmoothing = DEFAULT_ZOOM_SMOOTHING;
     private static float targetZoom = 20.0F;
     private static float currentZoom = 20.0F;
-    private static final float ZOOM_SMOOTHING = 0.25F;
-
-    private static final int YOFFSET = 3;
 
     private int savedHotbarSlot = -1;
     private float originalSensitivity = -1.0F;
 
     public RenderHandler renderHandler = new RenderHandler();
+
+    public static float getZoomSmoothing() { return zoomSmoothing; }
+    public static void setZoomSmoothing(float value) { zoomSmoothing = value; }
+
+    public static float getZoomStep() { return zoomStep; }
+    public static void setZoomStep(float value) { zoomStep = value; }
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
@@ -38,7 +49,7 @@ public class ZoomHandler {
         if (mc.thePlayer == null) return;
 
         if (Math.abs(currentZoom - targetZoom) > 0.01F) {
-            currentZoom += (targetZoom - currentZoom) * ZOOM_SMOOTHING;
+            currentZoom += (targetZoom - currentZoom) * zoomSmoothing;
         } else {
             currentZoom = targetZoom;
         }
@@ -71,10 +82,10 @@ public class ZoomHandler {
         if (scroll != 0) {
             if (scroll > 0) {
                 if (targetZoom > MIN_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.5F);
-                targetZoom = Math.max(MIN_ZOOM, targetZoom - ZOOM_STEP);
+                targetZoom = Math.max(MIN_ZOOM, targetZoom - zoomStep);
             } else {
                 if (targetZoom < MAX_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.2F);
-                targetZoom = Math.min(MAX_ZOOM, targetZoom + ZOOM_STEP);
+                targetZoom = Math.min(MAX_ZOOM, targetZoom + zoomStep);
             }
 
             LOGGER.info("Zoom changed: {}", targetZoom);
@@ -117,14 +128,14 @@ public class ZoomHandler {
         int imageSize = sr.getScaledHeight();
         int xPos = (screenWidth - imageSize) / 2;
 
-        Gui.drawRect(0, 0, screenWidth, YOFFSET, BLACK);
+        Gui.drawRect(0, 0, screenWidth, Y_OFFSET, BLACK);
 
         Gui.drawRect(0, 0, xPos, imageSize, BLACK);
         Gui.drawRect(xPos + imageSize, 0, screenWidth, imageSize, BLACK);
 
         mc.getTextureManager().bindTexture(new ResourceLocation(FireballMod.MODID, "textures/gui/scope.png"));
         Gui.drawModalRectWithCustomSizedTexture(
-                xPos, YOFFSET,
+                xPos, Y_OFFSET,
                 0, 0,
                 imageSize, imageSize,
                 imageSize, imageSize
