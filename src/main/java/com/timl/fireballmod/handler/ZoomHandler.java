@@ -2,6 +2,7 @@ package com.timl.fireballmod.handler;
 
 import static com.timl.fireballmod.FireballMod.LOGGER;
 import com.timl.fireballmod.FireballMod;
+import com.timl.fireballmod.Settings;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
@@ -25,21 +26,20 @@ public class ZoomHandler {
     public static final float MIN_ZOOM_SMOOTHING = 1.0F;
     public static final float MAX_ZOOM_SMOOTHING = 0.05F;
     public static final float DEFAULT_ZOOM_SMOOTHING = 0.25F;
-    private static float zoomStep = DEFAULT_ZOOM_STEP;
-    private static float zoomSmoothing = DEFAULT_ZOOM_SMOOTHING;
-    private static float targetZoom = 20.0F;
-    private static float currentZoom = 20.0F;
+
+    private final Settings settings;
+
+    private float targetZoom = 20.0F;
+    private float currentZoom = 20.0F;
 
     private int savedHotbarSlot = -1;
     private float originalSensitivity = -1.0F;
 
     public RenderHandler renderHandler = new RenderHandler();
 
-    public static float getZoomSmoothing() { return zoomSmoothing; }
-    public static void setZoomSmoothing(float value) { zoomSmoothing = value; }
-
-    public static float getZoomStep() { return zoomStep; }
-    public static void setZoomStep(float value) { zoomStep = value; }
+    public ZoomHandler(Settings settings) {
+        this.settings = settings;
+    }
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
@@ -49,7 +49,7 @@ public class ZoomHandler {
         if (mc.thePlayer == null) return;
 
         if (Math.abs(currentZoom - targetZoom) > 0.01F) {
-            currentZoom += (targetZoom - currentZoom) * zoomSmoothing;
+            currentZoom += (targetZoom - currentZoom) * settings.getSmoothing();
         } else {
             currentZoom = targetZoom;
         }
@@ -82,10 +82,10 @@ public class ZoomHandler {
         if (scroll != 0) {
             if (scroll > 0) {
                 if (targetZoom > MIN_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.5F);
-                targetZoom = Math.max(MIN_ZOOM, targetZoom - zoomStep);
+                targetZoom = Math.max(MIN_ZOOM, targetZoom - settings.getZoomStep());
             } else {
                 if (targetZoom < MAX_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.2F);
-                targetZoom = Math.min(MAX_ZOOM, targetZoom + zoomStep);
+                targetZoom = Math.min(MAX_ZOOM, targetZoom + settings.getZoomStep());
             }
 
             LOGGER.info("Zoom changed: {}", targetZoom);

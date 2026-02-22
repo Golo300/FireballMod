@@ -1,5 +1,6 @@
 package com.timl.fireballmod;
 
+import com.timl.fireballmod.gui.GuiZoomSettings;
 import com.timl.fireballmod.handler.CameraShakeHandler;
 import com.timl.fireballmod.handler.ZoomHandler;
 import com.timl.fireballmod.keybinding.ConfigMenuKeybind;
@@ -10,10 +11,13 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit() {
+
+        final Settings settings = new Settings();
         ZoomKeybind.register();
-        ConfigMenuKeybind.register();
-        MinecraftForge.EVENT_BUS.register(new ZoomHandler());
-        MinecraftForge.EVENT_BUS.register(new CameraShakeHandler());
+        ConfigMenuKeybind.register(settings);
+
+        MinecraftForge.EVENT_BUS.register(new ZoomHandler(settings));
+        MinecraftForge.EVENT_BUS.register(new CameraShakeHandler(settings));
         MinecraftForge.EVENT_BUS.register(new ConfigMenuKeybind());
     }
 

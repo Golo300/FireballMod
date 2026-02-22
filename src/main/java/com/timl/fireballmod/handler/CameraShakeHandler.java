@@ -1,5 +1,6 @@
 package com.timl.fireballmod.handler;
 
+import com.timl.fireballmod.Settings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -16,17 +17,19 @@ public class CameraShakeHandler {
     public static final float DEFAULT_SHAKE = 2.0f;
     public static final float MIN_SHAKE = 0.0f;
     public static final float MAX_SHAKE = 5.0f;
-    private static float maxShake = DEFAULT_SHAKE;
 
     private final Random random = new Random();
     private float currentShakeIntensity = 0f;
     private long lastShakeTime = 0;
 
-    public static float getMaxShake() { return maxShake; }
-    public static void setMaxShake(float value) { maxShake = value; }
+    private final Settings settings;
+
+    public CameraShakeHandler(Settings settings) {
+        this.settings = settings;
+    }
 
     public void triggerCameraShake() {
-        currentShakeIntensity = maxShake;
+        currentShakeIntensity = settings.getMaxShake();
         lastShakeTime = System.currentTimeMillis();
     }
 
@@ -37,7 +40,7 @@ public class CameraShakeHandler {
         long currentTime = System.currentTimeMillis();
         long elapsed = currentTime - lastShakeTime;
 
-        currentShakeIntensity = Math.max(0, maxShake - (elapsed / 500f));
+        currentShakeIntensity = Math.max(0, settings.getMaxShake() - (elapsed / 500f));
 
         if (currentShakeIntensity <= 0) return;
 

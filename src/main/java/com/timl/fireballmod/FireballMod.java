@@ -45,10 +45,6 @@ public class FireballMod {
         float zoomStep = config.getFloat("zoomStep", "zoom", ZoomHandler.DEFAULT_ZOOM_STEP, ZoomHandler.MIN_ZOOM_STEP, ZoomHandler.MAX_ZOOM_STEP, "zoom");
         float maxShake = config.getFloat("maxShake", "camera", CameraShakeHandler.DEFAULT_SHAKE, CameraShakeHandler.MIN_SHAKE, CameraShakeHandler.MIN_SHAKE, "camera shake intensity");
 
-        ZoomHandler.setZoomSmoothing(smoothing);
-        ZoomHandler.setZoomStep(zoomStep);
-        CameraShakeHandler.setMaxShake(maxShake);
-
         proxy.preInit();
         LOGGER.info("Config loaded: smoothing={}, zoomStep={}, maxShake={}", smoothing, zoomStep, maxShake);
     }

@@ -1,5 +1,6 @@
 package com.timl.fireballmod.gui;
 
+import com.timl.fireballmod.Settings;
 import com.timl.fireballmod.handler.CameraShakeHandler;
 import com.timl.fireballmod.handler.ZoomHandler;
 import net.minecraft.client.gui.GuiButton;
@@ -9,16 +10,17 @@ import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class GuiZoomSettings extends GuiScreen {
 
-    private float smoothing = ZoomHandler.getZoomSmoothing();
-    private float zoomStep = ZoomHandler.getZoomStep();
-    private float maxShake = CameraShakeHandler.getMaxShake();
     private GuiSlider smoothingSlider;
     private GuiSlider zoomStepSlider;
     private GuiSlider maxShakeSlider;
     private GuiButton saveButton;
     private GuiButton resetButton;
-    private final Configuration config = com.timl.fireballmod.FireballMod.instance.getConfig();
 
+    private final Settings settings;
+
+    public GuiZoomSettings(Settings settings) {
+        this.settings = settings;
+    }
     @Override
     public void initGui() {
         int centerX = width / 2, centerY = height / 2;
@@ -27,7 +29,7 @@ public class GuiZoomSettings extends GuiScreen {
         smoothingSlider = new GuiSlider(
                 0, centerX - 70, centerY - 60, 140, 20,
                 "Zoom smoothness: ", "",
-                ZoomHandler.MIN_ZOOM_SMOOTHING, ZoomHandler.MAX_ZOOM_SMOOTHING, smoothing,
+                ZoomHandler.MIN_ZOOM_SMOOTHING, ZoomHandler.MAX_ZOOM_SMOOTHING, settings.getSmoothing(),
                 false,
                 true,
                 new GuiSlider.ISlider() {
@@ -43,7 +45,7 @@ public class GuiZoomSettings extends GuiScreen {
         zoomStepSlider = new GuiSlider(
                 1, centerX - 70, centerY - 30, 140, 20,
                 "Zoom step: ", "",
-                ZoomHandler.MIN_ZOOM_STEP, ZoomHandler.MAX_ZOOM_STEP, zoomStep,
+                ZoomHandler.MIN_ZOOM_STEP, ZoomHandler.MAX_ZOOM_STEP, settings.getZoomStep(),
                 false,
                 true,
                 new GuiSlider.ISlider() {
@@ -56,7 +58,7 @@ public class GuiZoomSettings extends GuiScreen {
         maxShakeSlider = new GuiSlider(
                 2, centerX - 70, centerY, 140, 20,
                 "Shake intensity: ", "",
-                CameraShakeHandler.MIN_SHAKE, CameraShakeHandler.MAX_SHAKE, maxShake,
+                CameraShakeHandler.MIN_SHAKE, CameraShakeHandler.MAX_SHAKE, settings.getMaxShake(),
                 false,
                 true,
                 new GuiSlider.ISlider() {
@@ -82,31 +84,28 @@ public class GuiZoomSettings extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button == saveButton) {
-            smoothing = (float) smoothingSlider.getValue();
-            zoomStep = (float) zoomStepSlider.getValue();
-            maxShake = (float) maxShakeSlider.getValue();
-            ZoomHandler.setZoomSmoothing(smoothing);
-            ZoomHandler.setZoomStep(zoomStep);
-            CameraShakeHandler.setMaxShake(maxShake);
+            settings.setSmoothing((float) smoothingSlider.getValue());
+            settings.setZoomStep((float) zoomStepSlider.getValue());
+            settings.setMaxShake((float) maxShakeSlider.getValue());
             mc.displayGuiScreen(null);
 
             final Configuration config = com.timl.fireballmod.FireballMod.instance.getConfig();
-            config.get("zoom", "zoomSmoothing", ZoomHandler.DEFAULT_ZOOM_SMOOTHING).set(smoothing);
-            config.get("zoom", "zoomStep", ZoomHandler.DEFAULT_ZOOM_STEP).set(zoomStep);
-            config.get("camera", "maxShake", CameraShakeHandler.DEFAULT_SHAKE).set(maxShake);
+            config.get("zoom", "zoomSmoothing", ZoomHandler.DEFAULT_ZOOM_SMOOTHING).set(settings.getSmoothing());
+            config.get("zoom", "zoomStep", ZoomHandler.DEFAULT_ZOOM_STEP).set(settings.getZoomStep());
+            config.get("camera", "maxShake", CameraShakeHandler.DEFAULT_SHAKE).set(settings.getMaxShake());
             config.save();
         } else if (button == resetButton) {
-            smoothing = ZoomHandler.DEFAULT_ZOOM_SMOOTHING;
-            zoomStep = ZoomHandler.DEFAULT_ZOOM_STEP;
-            maxShake = CameraShakeHandler.DEFAULT_SHAKE;
+            settings.setSmoothing(ZoomHandler.DEFAULT_ZOOM_SMOOTHING);
+            settings.setZoomStep(ZoomHandler.DEFAULT_ZOOM_STEP);
+            settings.setMaxShake(CameraShakeHandler.DEFAULT_SHAKE);
 
-            smoothingSlider.setValue(smoothing);
-            zoomStepSlider.setValue(zoomStep);
-            maxShakeSlider.setValue(maxShake);
+            smoothingSlider.setValue(settings.getSmoothing());
+            zoomStepSlider.setValue(settings.getZoomStep());
+            maxShakeSlider.setValue(settings.getMaxShake());
 
-            smoothingSlider.displayString = "Smoothness: " + String.format("%.2f", smoothing);
-            zoomStepSlider.displayString = "Zoom step: " + String.format("%.0f", zoomStep);
-            maxShakeSlider.displayString = "Shake intensity: " + String.format("%.1f", maxShake);
+            smoothingSlider.displayString = "Smoothness: " + String.format("%.2f", settings.getSmoothing());
+            zoomStepSlider.displayString = "Zoom step: " + String.format("%.0f", settings.getZoomStep());
+            maxShakeSlider.displayString = "Shake intensity: " + String.format("%.1f", settings.getMaxShake());
         }
     }
 
