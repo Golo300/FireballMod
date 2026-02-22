@@ -7,12 +7,13 @@ import com.timl.fireballmod.keybinding.ConfigMenuKeybind;
 import com.timl.fireballmod.keybinding.ZoomKeybind;
 import net.minecraftforge.common.MinecraftForge;
 
+import static com.timl.fireballmod.FireballMod.settings;
+
 public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit() {
 
-        final Settings settings = new Settings();
         ZoomKeybind.register();
         ConfigMenuKeybind.register(settings);
 

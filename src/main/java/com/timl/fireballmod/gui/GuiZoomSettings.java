@@ -89,12 +89,10 @@ public class GuiZoomSettings extends GuiScreen {
             settings.setMaxShake((float) maxShakeSlider.getValue());
             mc.displayGuiScreen(null);
 
-            final Configuration config = com.timl.fireballmod.FireballMod.instance.getConfig();
-            config.get("zoom", "zoomSmoothing", ZoomHandler.DEFAULT_ZOOM_SMOOTHING).set(settings.getSmoothing());
-            config.get("zoom", "zoomStep", ZoomHandler.DEFAULT_ZOOM_STEP).set(settings.getZoomStep());
-            config.get("camera", "maxShake", CameraShakeHandler.DEFAULT_SHAKE).set(settings.getMaxShake());
-            config.save();
+            settings.save();
+
         } else if (button == resetButton) {
+
             settings.setSmoothing(ZoomHandler.DEFAULT_ZOOM_SMOOTHING);
             settings.setZoomStep(ZoomHandler.DEFAULT_ZOOM_STEP);
             settings.setMaxShake(CameraShakeHandler.DEFAULT_SHAKE);
