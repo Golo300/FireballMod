@@ -16,11 +16,15 @@ public class Settings {
     private float smoothing = ZoomHandler.DEFAULT_ZOOM_SMOOTHING;
     private float zoomStep = ZoomHandler.DEFAULT_ZOOM_STEP;
     private float maxShake = CameraShakeHandler.DEFAULT_SHAKE;
+    private boolean showDistance = true;
+    private boolean showFireballCount = true;
 
     private final Configuration config;
     private final Property propSmoothing;
     private final Property propZoomStep;
     private final Property propMaxShake;
+    private final Property propShowDistance;
+    private final Property propShowFireballCount;
 
     public Settings(Configuration config) {
         this.config = config;
@@ -38,13 +42,18 @@ public class Settings {
         propMaxShake.setMinValue(CameraShakeHandler.MIN_SHAKE);
         propMaxShake.setMaxValue(CameraShakeHandler.MAX_SHAKE);
 
-        smoothing = (float) propSmoothing.getDouble();
+        propShowDistance = config.get("gui", "showDistance", true, "show distance element");
+        propShowFireballCount = config.get("gui", "showFireballCount", true, "show fireball count element");
+
+        smoothing  = (float) propSmoothing.getDouble();
         zoomStep   = (float) propZoomStep.getDouble();
         maxShake   = (float) propMaxShake.getDouble();
 
-        LOGGER.info("Config loaded: smoothing={}, zoomStep={}, maxShake={}", smoothing, zoomStep, maxShake);
+        showDistance = propShowDistance.getBoolean();
+        showFireballCount = propShowFireballCount.getBoolean();
+        LOGGER.info("Config loaded: smoothing={}, zoomStep={}, maxShake={}, showDistance={}, showFireballCount={}",
+                smoothing, zoomStep, maxShake, propShowDistance, propShowFireballCount);
     }
-
 
     public float getSmoothing() {
         return smoothing;
@@ -70,11 +79,30 @@ public class Settings {
         this.maxShake = maxShake;
     }
 
+    public boolean getShowDistance() {
+        return showDistance;
+    }
+
+    public void setShowDistance(boolean showDistance) {
+        this.showDistance = showDistance;
+    }
+
+    public boolean getShowFireballCount() {
+        return showFireballCount;
+    }
+
+    public void setShowFireballCount(boolean showFireballCount) {
+        this.showFireballCount = showFireballCount;
+    }
+
     public void save() {
         propSmoothing.setValue(smoothing);
         propZoomStep.setValue(zoomStep);
         propMaxShake.setValue(maxShake);
+        propShowDistance.setValue(showDistance);
+        propShowFireballCount.setValue(showFireballCount);
         config.save();
-        LOGGER.info("Config saved: smoothing={}, zoomStep={}, maxShake={}", smoothing, zoomStep, maxShake);
+        LOGGER.info("Config saved: smoothing={}, zoomStep={}, maxShake={}, showDistance={}, showFireballCount={}",
+                smoothing, zoomStep, maxShake, showDistance, showFireballCount);
     }
 }
