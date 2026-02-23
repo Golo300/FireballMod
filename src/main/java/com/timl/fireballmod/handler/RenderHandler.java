@@ -1,5 +1,6 @@
 package com.timl.fireballmod.handler;
 
+import com.timl.fireballmod.Settings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,7 +24,18 @@ public class RenderHandler {
     public static final int COUNTER_BG_COLOR = 0xAA000000;
     public static final int COUNTER_TEXT_COLOR = 0xFFFFFF;
 
+    private final Settings settings;
+
+    public RenderHandler(Settings settings) {
+        this.settings = settings;
+    }
+
     public void drawDistanceInfo(Minecraft mc, int screenWidth, int screenHeight) {
+
+        if (!settings.getShowDistance()) {
+            return;
+        }
+
         String distanceText;
         MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(200.0D, 1.0F);
 
@@ -49,6 +61,10 @@ public class RenderHandler {
 
 
     public void drawShotCounter(Minecraft mc, int screenWidth) {
+
+        if (!settings.getShowFireballCount()) {
+            return;
+        }
 
         int padding = COUNTER_PADDING;
         int textOffset = COUNTER_TEXT_OFFSET;

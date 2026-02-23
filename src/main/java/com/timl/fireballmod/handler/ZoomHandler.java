@@ -35,10 +35,11 @@ public class ZoomHandler {
     private int savedHotbarSlot = -1;
     private float originalSensitivity = -1.0F;
 
-    public RenderHandler renderHandler = new RenderHandler();
+    public RenderHandler renderHandler;
 
     public ZoomHandler(Settings settings) {
         this.settings = settings;
+        renderHandler = new RenderHandler(settings);
     }
 
     @SubscribeEvent
