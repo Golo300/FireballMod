@@ -145,21 +145,21 @@ public class GuiScopeSelect extends GuiScreen {
         drawDefaultBackground();
 
         drawCenteredString(fontRendererObj, "Select Scope",
-                guiX + guiW / 2, guiY + 5, 0xFFFFFF);
+                guiX + guiW / 2, guiY + 5, Color.COLOR_TITLE);
         
         String pathText = ".minecraft/fireballmod/scopes/";
         drawCenteredString(fontRendererObj, pathText,
-                guiX + guiW / 2, guiY + 13, 0x777777);
+                guiX + guiW / 2, guiY + 13, Color.COLOR_PATH);
 
         if (scopes == null || scopes.isEmpty()) {
             drawCenteredString(fontRendererObj, "No scopes found.",
-                    guiX + guiW / 2, guiY + guiH / 2, 0xFF4444);
+                    guiX + guiW / 2, guiY + guiH / 2, Color.COLOR_NO_SCOPES);
             super.drawScreen(mouseX, mouseY, partialTicks);
             return;
         }
 
-        drawRect(listX - 2, listY - 2, listX + listW + 2, listY + listH + 2, 0xFF555555);
-        drawRect(listX, listY, listX + listW, listY + listH, 0xFF1E1E1E);
+        drawRect(listX - 2, listY - 2, listX + listW + 2, listY + listH + 2, Color.COLOR_LIST_BORDER);
+        drawRect(listX, listY, listX + listW, listY + listH, Color.COLOR_LIST_BG);
 
         enableScissor(listX - 2, listY - 2, listW + 4, listH + 4);
 
@@ -173,8 +173,8 @@ public class GuiScopeSelect extends GuiScreen {
             int ty = listY + visRow * THUMB_CELL_H;
 
             drawRect(tx - 2, ty - 2, tx + THUMB_SIZE + 2, ty + THUMB_SIZE + 2,
-                    i == selectedIndex ? 0xFFFFFF00 : 0xFF555555);
-            drawRect(tx, ty, tx + THUMB_SIZE, ty + THUMB_SIZE, 0xFF111111);
+                    i == selectedIndex ? Color.COLOR_THUMB_SELECTED : Color.COLOR_THUMB_UNSELECTED);
+            drawRect(tx, ty, tx + THUMB_SIZE, ty + THUMB_SIZE, Color.COLOR_THUMB_BG);
 
             mc.getTextureManager().bindTexture(scopes.get(i).location);
             drawScaledTexture(tx, ty, THUMB_SIZE, THUMB_SIZE);
@@ -182,14 +182,14 @@ public class GuiScopeSelect extends GuiScreen {
             String label = scopes.get(i).name;
             if (label.length() > 8) label = label.substring(0, 7) + "..";
             drawCenteredString(fontRendererObj, label,
-                    tx + THUMB_SIZE / 2, ty + THUMB_SIZE + 2, 0xAAAAAA);
+                    tx + THUMB_SIZE / 2, ty + THUMB_SIZE + 2, Color.COLOR_LABEL);
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         int pSz = Math.min(PREVIEW_SZ, listH);
-        drawRect(previewX - 1, previewY - 1, previewX + pSz + 1, previewY + pSz + 1, 0xFF555555);
-        drawRect(previewX, previewY, previewX + pSz, previewY + pSz, 0xFF111111);
+        drawRect(previewX - 1, previewY - 1, previewX + pSz + 1, previewY + pSz + 1, Color.COLOR_PREVIEW_BORDER);
+        drawRect(previewX, previewY, previewX + pSz, previewY + pSz, Color.COLOR_PREVIEW_BG);
 
         ScopeManager.ScopeEntry sel = scopes.get(selectedIndex);
         mc.getTextureManager().bindTexture(sel.location);

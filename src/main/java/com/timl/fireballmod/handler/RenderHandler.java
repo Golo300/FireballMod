@@ -1,6 +1,7 @@
 package com.timl.fireballmod.handler;
 
 import com.timl.fireballmod.Settings;
+import com.timl.fireballmod.gui.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,11 +12,6 @@ import net.minecraft.util.MovingObjectPosition;
 
 public class RenderHandler {
 
-    public static int BLACK = 0xFF000000;
-    public static int GRAY = 0x88000000;
-    public static int GREEN = 0x00FF00;
-
-    
     public static final int COUNTER_Y_POSITION = 10;
     public static final int COUNTER_PADDING = 0;
     public static final int COUNTER_HEIGHT = 16;
@@ -54,9 +50,9 @@ public class RenderHandler {
         int x = (screenWidth - textWidth) / 2;
         int y = screenHeight - 30;
 
-        Gui.drawRect(x - 4, y - 2, x + textWidth + 4, y + 10, GRAY);
+        Gui.drawRect(x - 4, y - 2, x + textWidth + 4, y + 10, Color.GRAY);
 
-        mc.fontRendererObj.drawString(distanceText, x, y, GREEN);
+        mc.fontRendererObj.drawString(distanceText, x, y, Color.GREEN);
     }
 
 

@@ -3,6 +3,7 @@ package com.timl.fireballmod.handler;
 import static com.timl.fireballmod.FireballMod.LOGGER;
 import com.timl.fireballmod.FireballMod;
 import com.timl.fireballmod.Settings;
+import com.timl.fireballmod.gui.Color;
 import com.timl.fireballmod.scope.ScopeManager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -14,10 +15,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import static com.timl.fireballmod.handler.RenderHandler.BLACK;
 import static com.timl.fireballmod.keybinding.ZoomKeybind.zoomKey;
 
 public class ZoomHandler {
+    
     private static final int Y_OFFSET = 3;
     public static final float MIN_ZOOM = 1.0F;
     public static final float MAX_ZOOM = 60.0F;
@@ -123,9 +124,9 @@ public class ZoomHandler {
         int imageSize    = sr.getScaledHeight();
         int xPos = (screenWidth - imageSize) / 2;
 
-        Gui.drawRect(0, 0, screenWidth, Y_OFFSET, BLACK);
-        Gui.drawRect(0, 0, xPos, imageSize, BLACK);
-        Gui.drawRect(xPos + imageSize, 0, screenWidth, imageSize, BLACK);
+        Gui.drawRect(0, 0, screenWidth, Y_OFFSET, Color.BLACK);
+        Gui.drawRect(0, 0, xPos, imageSize, Color.BLACK);
+        Gui.drawRect(xPos + imageSize, 0, screenWidth, imageSize, Color.BLACK);
 
         ResourceLocation scopeTexture = getCurrentScopeTexture();
         mc.getTextureManager().bindTexture(scopeTexture);
