@@ -15,10 +15,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import static com.timl.fireballmod.keybinding.ZoomKeybind.zoomKey;
+import static com.timl.fireballmod.keybinding.ZoomKeybind.ZOOM_KEY;
 
 public class ZoomHandler {
-    
+
     private static final int Y_OFFSET = 3;
     public static final float MIN_ZOOM = 1.0F;
     public static final float MAX_ZOOM = 60.0F;
@@ -152,7 +152,7 @@ public class ZoomHandler {
     }
 
     public static boolean zoomCondition() {
-        return zoomKey.isKeyDown();
+        return ZOOM_KEY.isKeyDown();
     }
 
     private float mapZoom(float linearZoom) {

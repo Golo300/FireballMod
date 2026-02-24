@@ -147,7 +147,7 @@ public class GuiScopeSelect extends GuiScreen {
         drawCenteredString(fontRendererObj, "Select Scope",
                 guiX + guiW / 2, guiY + 5, Color.COLOR_TITLE);
         
-        String pathText = ".minecraft/fireballmod/scopes/";
+        String pathText = ScopeManager.SCOPE_DIR.getAbsolutePath();
         drawCenteredString(fontRendererObj, pathText,
                 guiX + guiW / 2, guiY + 13, Color.COLOR_PATH);
 

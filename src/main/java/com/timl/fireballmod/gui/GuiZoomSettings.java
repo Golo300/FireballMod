@@ -34,7 +34,7 @@ public class GuiZoomSettings extends GuiScreen {
     private GuiButton btnSave;
     private GuiButton btnReset;
 
-    private final Settings     settings;
+    private final Settings settings;
     private final ScopeManager scopeManager;
 
     private boolean showDistance;
@@ -50,11 +50,9 @@ public class GuiZoomSettings extends GuiScreen {
     @Override
     public void initGui() {
         buttonList.clear();
-
         
         guiX = (width  - GUI_W) / 2;
         guiY = (height - GUI_H) / 2;
-
         
         int ex = guiX + MARGIN;
         int ey = guiY + TITLE_H + MARGIN;
