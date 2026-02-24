@@ -1,5 +1,6 @@
 package com.timl.fireballmod.scope;
 
+import static com.timl.fireballmod.FireballMod.LOGGER;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -48,20 +49,18 @@ public class ScopeManager {
             }
         }
         scopes.clear();
-
         
         scopes.add(new ScopeEntry(
                 DEFAULT_SCOPE,
                 new ResourceLocation("fireballmod", "textures/gui/scope.png"),
                 true
         ));
-
         
         SCOPE_DIR.mkdirs();
 
-        System.out.println("[FireballMod] Scope-Ordner: " + SCOPE_DIR.getAbsolutePath());
-        System.out.println("[FireballMod] Ordner existiert: " + SCOPE_DIR.exists());
-        System.out.println("[FireballMod] Ordner lesbar: " + SCOPE_DIR.canRead());
+        LOGGER.info("Scope-Directory: " + SCOPE_DIR.getAbsolutePath());
+        LOGGER.info("Directory exists: " + SCOPE_DIR.exists());
+        LOGGER.info("Directory readable: " + SCOPE_DIR.canRead());
 
         File[] files = SCOPE_DIR.listFiles(new FilenameFilter() {
             @Override
@@ -111,11 +110,11 @@ public class ScopeManager {
                 scopes.add(new ScopeEntry(name, loc, false));
 
             } catch (Exception e) {
-                System.err.println("[FireballMod] Konnte Scope nicht laden: " + file.getName() + " - " + e.getMessage());
+                LOGGER.error("Scope could not be loeaded: " + file.getName() + " - " + e.getMessage());
             }
         }
 
-        System.out.println("[FireballMod] " + scopes.size() + " Scope(s) geladen.");
+        LOGGER.info(scopes.size() + " Scope(s) loaded.");
     }
 
     public List<ScopeEntry> getScopes() {

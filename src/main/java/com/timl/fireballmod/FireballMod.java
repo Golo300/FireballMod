@@ -1,5 +1,6 @@
 package com.timl.fireballmod;
 
+import static com.timl.fireballmod.FireballMod.LOGGER;
 import com.timl.fireballmod.handler.CameraShakeHandler;
 import com.timl.fireballmod.handler.ZoomHandler;
 import net.minecraftforge.common.config.Configuration;
@@ -43,6 +44,6 @@ public class FireballMod {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         proxy.init();
-        System.out.println(NAME + " initialized!");
+        LOGGER.info(NAME + " initialized!");
     }
 }

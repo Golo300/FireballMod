@@ -18,5 +18,4 @@ public class Color {
     public static int GRAY = 0x88000000;
     public static int GREEN = 0x00FF00;
 
-    
 }
