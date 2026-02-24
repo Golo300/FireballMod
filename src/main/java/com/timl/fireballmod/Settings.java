@@ -2,11 +2,9 @@ package com.timl.fireballmod;
 
 import com.timl.fireballmod.handler.CameraShakeHandler;
 import com.timl.fireballmod.handler.ZoomHandler;
-import jdk.jfr.internal.consumer.RecordingInput;
+import com.timl.fireballmod.scope.ScopeManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import static com.timl.fireballmod.FireballMod.LOGGER;
 
@@ -18,6 +16,7 @@ public class Settings {
     private float maxShake = CameraShakeHandler.DEFAULT_SHAKE;
     private boolean showDistance = true;
     private boolean showFireballCount = true;
+    private String selectedScope = ScopeManager.DEFAULT_SCOPE; // NEU
 
     private final Configuration config;
     private final Property propSmoothing;
@@ -25,6 +24,7 @@ public class Settings {
     private final Property propMaxShake;
     private final Property propShowDistance;
     private final Property propShowFireballCount;
+    private final Property propSelectedScope; // NEU
 
     public Settings(Configuration config) {
         this.config = config;
@@ -42,58 +42,41 @@ public class Settings {
         propMaxShake.setMinValue(CameraShakeHandler.MIN_SHAKE);
         propMaxShake.setMaxValue(CameraShakeHandler.MAX_SHAKE);
 
-        propShowDistance = config.get("gui", "showDistance", true, "show distance element");
+        propShowDistance     = config.get("gui", "showDistance",     true, "show distance element");
         propShowFireballCount = config.get("gui", "showFireballCount", true, "show fireball count element");
 
-        smoothing  = (float) propSmoothing.getDouble();
-        zoomStep   = (float) propZoomStep.getDouble();
-        maxShake   = (float) propMaxShake.getDouble();
+        // NEU
+        propSelectedScope = config.get("gui", "selectedScope", ScopeManager.DEFAULT_SCOPE, "selected scope texture name");
 
-        showDistance = propShowDistance.getBoolean();
+        smoothing         = (float) propSmoothing.getDouble();
+        zoomStep          = (float) propZoomStep.getDouble();
+        maxShake          = (float) propMaxShake.getDouble();
+        showDistance      = propShowDistance.getBoolean();
         showFireballCount = propShowFireballCount.getBoolean();
-        LOGGER.info("Config loaded: smoothing={}, zoomStep={}, maxShake={}, showDistance={}, showFireballCount={}",
-                smoothing, zoomStep, maxShake, propShowDistance, propShowFireballCount);
+        selectedScope     = propSelectedScope.getString(); // NEU
+
+        LOGGER.info("Config loaded: smoothing={}, zoomStep={}, maxShake={}, showDistance={}, showFireballCount={}, selectedScope={}",
+                smoothing, zoomStep, maxShake, showDistance, showFireballCount, selectedScope);
     }
 
-    public float getSmoothing() {
-        return smoothing;
-    }
+    public float getSmoothing() { return smoothing; }
+    public void setSmoothing(float smoothing) { this.smoothing = smoothing; }
 
-    public void setSmoothing(float smoothing) {
-        this.smoothing = smoothing;
-    }
+    public float getZoomStep() { return zoomStep; }
+    public void setZoomStep(float zoomStep) { this.zoomStep = zoomStep; }
 
-    public float getZoomStep() {
-        return zoomStep;
-    }
+    public float getMaxShake() { return maxShake; }
+    public void setMaxShake(float maxShake) { this.maxShake = maxShake; }
 
-    public void setZoomStep(float zoomStep) {
-        this.zoomStep = zoomStep;
-    }
+    public boolean getShowDistance() { return showDistance; }
+    public void setShowDistance(boolean showDistance) { this.showDistance = showDistance; }
 
-    public float getMaxShake() {
-        return maxShake;
-    }
+    public boolean getShowFireballCount() { return showFireballCount; }
+    public void setShowFireballCount(boolean showFireballCount) { this.showFireballCount = showFireballCount; }
 
-    public void setMaxShake(float maxShake) {
-        this.maxShake = maxShake;
-    }
-
-    public boolean getShowDistance() {
-        return showDistance;
-    }
-
-    public void setShowDistance(boolean showDistance) {
-        this.showDistance = showDistance;
-    }
-
-    public boolean getShowFireballCount() {
-        return showFireballCount;
-    }
-
-    public void setShowFireballCount(boolean showFireballCount) {
-        this.showFireballCount = showFireballCount;
-    }
+    // NEU
+    public String getSelectedScope() { return selectedScope != null ? selectedScope : ScopeManager.DEFAULT_SCOPE; }
+    public void setSelectedScope(String name) { this.selectedScope = name; }
 
     public void save() {
         propSmoothing.setValue(smoothing);
@@ -101,8 +84,9 @@ public class Settings {
         propMaxShake.setValue(maxShake);
         propShowDistance.setValue(showDistance);
         propShowFireballCount.setValue(showFireballCount);
+        propSelectedScope.setValue(selectedScope); // NEU
         config.save();
-        LOGGER.info("Config saved: smoothing={}, zoomStep={}, maxShake={}, showDistance={}, showFireballCount={}",
-                smoothing, zoomStep, maxShake, showDistance, showFireballCount);
+        LOGGER.info("Config saved: smoothing={}, zoomStep={}, maxShake={}, showDistance={}, showFireballCount={}, selectedScope={}",
+                smoothing, zoomStep, maxShake, showDistance, showFireballCount, selectedScope);
     }
 }
