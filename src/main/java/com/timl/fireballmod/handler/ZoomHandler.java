@@ -29,7 +29,7 @@ public class ZoomHandler {
     public static final float DEFAULT_ZOOM_SMOOTHING = 0.25F;
 
     private final Settings settings;
-    private final ScopeManager scopeManager;   // NEU
+    private final ScopeManager scopeManager;   
 
     private float targetZoom = 20.0F;
     private float currentZoom = 20.0F;

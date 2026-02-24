@@ -18,7 +18,7 @@ public class GuiZoomSettings extends GuiScreen {
     private static final int ELEM_H   = 20;
     private static final int ROW_GAP  = 26;
     private static final int TITLE_H  = 20;
-    private static final int BOTTOM_H = 56; // Platz für Save + Reset
+    private static final int BOTTOM_H = 56;
 
     // Labels
     private static final String LABEL_SMOOTHING = "Zoom smoothness: ";
@@ -40,7 +40,6 @@ public class GuiZoomSettings extends GuiScreen {
     private boolean showDistance;
     private boolean showFireballCount;
 
-    // GUI-Ursprung (berechnet in initGui)
     private int guiX, guiY;
 
     public GuiZoomSettings(Settings settings, ScopeManager scopeManager) {
@@ -136,18 +135,13 @@ public class GuiZoomSettings extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
 
-        // GUI-Hintergrund
-        drawRect(guiX, guiY, guiX + GUI_W, guiY + GUI_H, 0xC0000000);
-
-        // Trennlinie unter Titel
-        drawRect(guiX, guiY + TITLE_H, guiX + GUI_W, guiY + TITLE_H + 1, 0xFF555555);
-
         // Titel
         drawCenteredString(fontRendererObj, "Fireball Tank Mod Settings",
                 guiX + GUI_W / 2, guiY + 6, 0xFFFFFF);
 
-        // Scope-Button aktualisieren (falls aus GuiScopeSelect zurückgekehrt)
-        btnSelectScope.displayString = "Select Scope: " + settings.getSelectedScope();
+        String scope = settings.getSelectedScope();
+        if (scope.length() > 15) scope = scope.substring(0, 12) + "..";
+        btnSelectScope.displayString = "Select Scope: " + scope;
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

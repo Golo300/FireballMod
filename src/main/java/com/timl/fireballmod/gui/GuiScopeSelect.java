@@ -143,11 +143,12 @@ public class GuiScopeSelect extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-        drawRect(guiX, guiY, guiX + guiW, guiY + guiH, 0xC0000000);
 
         drawCenteredString(fontRendererObj, "Select Scope",
                 guiX + guiW / 2, guiY + 5, 0xFFFFFF);
-        drawCenteredString(fontRendererObj, ".minecraft/fireballmod/scopes/",
+        
+        String pathText = ".minecraft/fireballmod/scopes/";
+        drawCenteredString(fontRendererObj, pathText,
                 guiX + guiW / 2, guiY + 13, 0x777777);
 
         if (scopes == null || scopes.isEmpty()) {
