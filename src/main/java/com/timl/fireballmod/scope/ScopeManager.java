@@ -41,7 +41,7 @@ public class ScopeManager {
     }
 
     public void reload() {
-        // Bestehende dynamische Texturen entfernen
+        
         for (ScopeEntry entry : scopes) {
             if (!entry.isDefault) {
                 Minecraft.getMinecraft().getTextureManager().deleteTexture(entry.location);
@@ -49,14 +49,14 @@ public class ScopeManager {
         }
         scopes.clear();
 
-        // Default-Scope immer als erste Option
+        
         scopes.add(new ScopeEntry(
                 DEFAULT_SCOPE,
                 new ResourceLocation("fireballmod", "textures/gui/scope.png"),
                 true
         ));
 
-        // Ordner erstellen falls nicht vorhanden
+        
         SCOPE_DIR.mkdirs();
 
         System.out.println("[FireballMod] Scope-Ordner: " + SCOPE_DIR.getAbsolutePath());
@@ -82,7 +82,7 @@ public class ScopeManager {
                 Minecraft.getMinecraft().getTextureManager().loadTexture(loc, new AbstractTexture() {
                     @Override
                     public void loadTexture(IResourceManager manager) throws IOException {
-                        // Textur-ID generieren
+                        
                         this.glTextureId = GL11.glGenTextures();
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.glTextureId);
 
@@ -96,10 +96,10 @@ public class ScopeManager {
 
                         ByteBuffer buffer = ByteBuffer.allocateDirect(width * height * 4);
                         for (int pixel : pixels) {
-                            buffer.put((byte) ((pixel >> 16) & 0xFF)); // R
-                            buffer.put((byte) ((pixel >> 8) & 0xFF));  // G
-                            buffer.put((byte) (pixel & 0xFF));         // B
-                            buffer.put((byte) ((pixel >> 24) & 0xFF)); // A
+                            buffer.put((byte) ((pixel >> 16) & 0xFF)); 
+                            buffer.put((byte) ((pixel >> 8) & 0xFF));  
+                            buffer.put((byte) (pixel & 0xFF));         
+                            buffer.put((byte) ((pixel >> 24) & 0xFF)); 
                         }
                         buffer.flip();
 

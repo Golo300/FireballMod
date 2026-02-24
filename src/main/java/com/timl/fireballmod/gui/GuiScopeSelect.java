@@ -65,9 +65,9 @@ public class GuiScopeSelect extends GuiScreen {
             }
         }
 
-        // GUI-Größe erhöhen, damit 3 Reihen passen
+        
         guiW = Math.min(360, (int) (width * 0.9));
-        guiH = Math.min(260, (int) (height * 0.9)); // 260 statt 240
+        guiH = Math.min(260, (int) (height * 0.9)); 
         guiX = (width - guiW) / 2;
         guiY = (height - guiH) / 2;
 
@@ -85,7 +85,7 @@ public class GuiScopeSelect extends GuiScreen {
         listW = THUMBS_PER_ROW * colW - THUMB_GAP;
         listH = innerH - MARGIN * 2;
 
-        // 3 Reihen erzwingen
+        
         visibleRows = 3;
         clampScroll();
 

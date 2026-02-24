@@ -146,7 +146,7 @@ public class ZoomHandler {
         if (entry != null) {
             return entry.location;
         }
-        // Fallback
+        
         return new ResourceLocation(FireballMod.MODID, "textures/gui/scope.png");
     }
 

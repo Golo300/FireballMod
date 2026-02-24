@@ -10,7 +10,7 @@ import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class GuiZoomSettings extends GuiScreen {
 
-    // --- Festes GUI-Layout ---
+    
     private static final int GUI_W    = 220;
     private static final int GUI_H    = 230;
     private static final int MARGIN   = 10;
@@ -20,7 +20,7 @@ public class GuiZoomSettings extends GuiScreen {
     private static final int TITLE_H  = 20;
     private static final int BOTTOM_H = 56;
 
-    // Labels
+    
     private static final String LABEL_SMOOTHING = "Zoom smoothness: ";
     private static final String LABEL_ZOOM_STEP = "Zoom step: ";
     private static final String LABEL_SHAKE     = "Shake intensity: ";
@@ -51,11 +51,11 @@ public class GuiZoomSettings extends GuiScreen {
     public void initGui() {
         buttonList.clear();
 
-        // GUI zentrieren wie vanilla
+        
         guiX = (width  - GUI_W) / 2;
         guiY = (height - GUI_H) / 2;
 
-        // Elemente starten unterhalb des Titels
+        
         int ex = guiX + MARGIN;
         int ey = guiY + TITLE_H + MARGIN;
 
@@ -115,7 +115,7 @@ public class GuiZoomSettings extends GuiScreen {
                 5, ex, ey + ROW_GAP * 5, ELEM_W, ELEM_H,
                 "Select Scope: " + settings.getSelectedScope());
 
-        // Save und Reset nebeneinander unten
+        
         int halfW = (ELEM_W - MARGIN) / 2;
         int btnY  = guiY + GUI_H - BOTTOM_H + MARGIN;
         btnSave  = new GuiButton(6, ex,                btnY, halfW, ELEM_H, "Save");
@@ -135,7 +135,7 @@ public class GuiZoomSettings extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
 
-        // Titel
+        
         drawCenteredString(fontRendererObj, "Fireball Tank Mod Settings",
                 guiX + GUI_W / 2, guiY + 6, 0xFFFFFF);
 

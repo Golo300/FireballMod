@@ -45,7 +45,7 @@ public class Settings {
         propShowDistance     = config.get("gui", "showDistance",     true, "show distance element");
         propShowFireballCount = config.get("gui", "showFireballCount", true, "show fireball count element");
 
-        // 
+        
         propSelectedScope = config.get("gui", "selectedScope", ScopeManager.DEFAULT_SCOPE, "selected scope texture name");
 
         smoothing         = (float) propSmoothing.getDouble();

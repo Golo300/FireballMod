@@ -15,7 +15,7 @@ public class RenderHandler {
     public static int GRAY = 0x88000000;
     public static int GREEN = 0x00FF00;
 
-    // Shot Counter Settings
+    
     public static final int COUNTER_Y_POSITION = 10;
     public static final int COUNTER_PADDING = 0;
     public static final int COUNTER_HEIGHT = 16;
