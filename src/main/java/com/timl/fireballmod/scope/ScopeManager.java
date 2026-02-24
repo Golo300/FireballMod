@@ -24,7 +24,7 @@ public class ScopeManager {
     private final List<ScopeEntry> scopes = new ArrayList();
 
     public static class ScopeEntry {
-        public final String name;       // Dateiname ohne .png, oder "default"
+        public final String name;
         public final ResourceLocation location;
         public final boolean isDefault;
 
