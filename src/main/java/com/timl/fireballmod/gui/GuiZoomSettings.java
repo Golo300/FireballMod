@@ -116,7 +116,7 @@ public class GuiZoomSettings extends GuiScreen {
         
         int halfW = (ELEM_W - MARGIN) / 2;
         int btnY  = guiY + GUI_H - BOTTOM_H + MARGIN;
-        btnSave  = new GuiButton(6, ex,                btnY, halfW, ELEM_H, "Save");
+        btnSave  = new GuiButton(6, ex, btnY, halfW, ELEM_H, "Save");
         btnReset = new GuiButton(7, ex + halfW + MARGIN, btnY, halfW, ELEM_H, "Reset");
 
         buttonList.add(smoothingSlider);
@@ -132,7 +132,6 @@ public class GuiZoomSettings extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-
         
         drawCenteredString(fontRendererObj, "Fireball Tank Mod Settings",
                 guiX + GUI_W / 2, guiY + 6, 0xFFFFFF);
@@ -185,7 +184,6 @@ public class GuiZoomSettings extends GuiScreen {
         btnShowFireballCount.displayString   = formatShowFireballCount(true);
         settings.setSelectedScope(ScopeManager.DEFAULT_SCOPE);
         btnSelectScope.displayString         = "Select Scope: " + ScopeManager.DEFAULT_SCOPE;
-        settings.save();
     }
 
     private static String formatSmoothing(double v)          { return LABEL_SMOOTHING + String.format("%.2f", v); }
