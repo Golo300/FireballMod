@@ -3,6 +3,8 @@ package com.timl.fireballmod.handler;
 import static com.timl.fireballmod.FireballMod.LOGGER;
 import com.timl.fireballmod.FireballMod;
 import com.timl.fireballmod.Settings;
+import com.timl.fireballmod.gui.Color;
+import com.timl.fireballmod.scope.ScopeManager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
@@ -13,10 +15,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import static com.timl.fireballmod.handler.RenderHandler.BLACK;
-import static com.timl.fireballmod.keybinding.ZoomKeybind.zoomKey;
+import static com.timl.fireballmod.keybinding.ZoomKeybind.ZOOM_KEY;
 
 public class ZoomHandler {
+
     private static final int Y_OFFSET = 3;
     public static final float MIN_ZOOM = 1.0F;
     public static final float MAX_ZOOM = 60.0F;
@@ -28,6 +30,7 @@ public class ZoomHandler {
     public static final float DEFAULT_ZOOM_SMOOTHING = 0.25F;
 
     private final Settings settings;
+    private final ScopeManager scopeManager;   
 
     private float targetZoom = 20.0F;
     private float currentZoom = 20.0F;
@@ -37,8 +40,9 @@ public class ZoomHandler {
 
     public RenderHandler renderHandler;
 
-    public ZoomHandler(Settings settings) {
+    public ZoomHandler(Settings settings, ScopeManager scopeManager) {
         this.settings = settings;
+        this.scopeManager = scopeManager;
         renderHandler = new RenderHandler(settings);
     }
 
@@ -88,7 +92,6 @@ public class ZoomHandler {
                 if (targetZoom < MAX_ZOOM) mc.thePlayer.playSound("random.click", 0.3F, 1.2F);
                 targetZoom = Math.min(MAX_ZOOM, targetZoom + settings.getZoomStep());
             }
-
             LOGGER.info("Zoom changed: {}", targetZoom);
         }
     }
@@ -96,7 +99,6 @@ public class ZoomHandler {
     @SubscribeEvent
     public void onFov(EntityViewRenderEvent.FOVModifier event) {
         if (!zoomCondition()) return;
-
         float mappedZoom = mapZoom(currentZoom);
         event.setFOV(mappedZoom);
     }
@@ -104,37 +106,30 @@ public class ZoomHandler {
     @SubscribeEvent
     public void onRenderPre(RenderGameOverlayEvent.Pre event) {
         if (zoomCondition()) {
-            if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS) {
-                event.setCanceled(true);
-            }
-            if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
-                event.setCanceled(true);
-            }
+            if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS) event.setCanceled(true);
+            if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR)     event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
-
-        if (!zoomCondition()) {
-            return;
-        }
+        if (!zoomCondition()) return;
 
         Minecraft mc = Minecraft.getMinecraft();
         ScaledResolution sr = new ScaledResolution(mc);
 
-        int screenWidth = sr.getScaledWidth();
+        int screenWidth  = sr.getScaledWidth();
         int screenHeight = sr.getScaledHeight();
-        int imageSize = sr.getScaledHeight();
+        int imageSize    = sr.getScaledHeight();
         int xPos = (screenWidth - imageSize) / 2;
 
-        Gui.drawRect(0, 0, screenWidth, Y_OFFSET, BLACK);
+        Gui.drawRect(0, 0, screenWidth, Y_OFFSET, Color.BLACK);
+        Gui.drawRect(0, 0, xPos, imageSize, Color.BLACK);
+        Gui.drawRect(xPos + imageSize, 0, screenWidth, imageSize, Color.BLACK);
 
-        Gui.drawRect(0, 0, xPos, imageSize, BLACK);
-        Gui.drawRect(xPos + imageSize, 0, screenWidth, imageSize, BLACK);
-
-        mc.getTextureManager().bindTexture(new ResourceLocation(FireballMod.MODID, "textures/gui/scope.png"));
+        ResourceLocation scopeTexture = getCurrentScopeTexture();
+        mc.getTextureManager().bindTexture(scopeTexture);
         Gui.drawModalRectWithCustomSizedTexture(
                 xPos, Y_OFFSET,
                 0, 0,
@@ -146,15 +141,24 @@ public class ZoomHandler {
         renderHandler.drawShotCounter(mc, screenWidth);
     }
 
+    private ResourceLocation getCurrentScopeTexture() {
+        String selected = settings.getSelectedScope();
+        ScopeManager.ScopeEntry entry = scopeManager.findByName(selected);
+        if (entry != null) {
+            return entry.location;
+        }
+        
+        return new ResourceLocation(FireballMod.MODID, "textures/gui/scope.png");
+    }
+
     public static boolean zoomCondition() {
-        return zoomKey.isKeyDown();
+        return ZOOM_KEY.isKeyDown();
     }
 
     private float mapZoom(float linearZoom) {
         float min = MIN_ZOOM;
         float max = MAX_ZOOM;
-
         float t = (linearZoom - min) / (max - min);
-        return min * (float)Math.pow(max / min, t);
+        return min * (float) Math.pow(max / min, t);
     }
 }

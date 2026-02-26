@@ -8,15 +8,18 @@ import org.lwjgl.input.Keyboard;
 import com.timl.fireballmod.gui.GuiZoomSettings;
 import net.minecraft.client.Minecraft;
 import com.timl.fireballmod.Settings;
+import com.timl.fireballmod.scope.ScopeManager; 
 
 public class ConfigMenuKeybind {
     public static final KeyBinding OPEN_CONFIG = new KeyBinding(
             "Settings", Keyboard.KEY_P, "Fireball Tank Mod");
 
     private static Settings settings = null;
+    private static ScopeManager scopeManager = null; 
 
-    public static void register(Settings settings) {
+    public static void register(Settings settings, ScopeManager scopeManager) {
         ConfigMenuKeybind.settings = settings;
+        ConfigMenuKeybind.scopeManager = scopeManager; 
         ClientRegistry.registerKeyBinding(OPEN_CONFIG);
     }
 
@@ -25,7 +28,7 @@ public class ConfigMenuKeybind {
         if (ConfigMenuKeybind.settings == null) return;
 
         if (OPEN_CONFIG.isPressed()) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiZoomSettings(settings));
+            Minecraft.getMinecraft().displayGuiScreen(new GuiZoomSettings(settings, scopeManager));
         }
     }
 }

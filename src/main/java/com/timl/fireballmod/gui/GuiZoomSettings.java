@@ -3,126 +3,162 @@ package com.timl.fireballmod.gui;
 import com.timl.fireballmod.Settings;
 import com.timl.fireballmod.handler.CameraShakeHandler;
 import com.timl.fireballmod.handler.ZoomHandler;
+import com.timl.fireballmod.scope.ScopeManager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class GuiZoomSettings extends GuiScreen {
-    private static final String zoomSmoothnessLabel = "Zoom smoothness: ";
-    private static final String zoomStepLabel = "Zoom step: ";
-    private static final String shakeIntensityLabel = "Shake intensity: ";
+
+    
+    private static final int GUI_W    = 220;
+    private static final int GUI_H    = 230;
+    private static final int MARGIN   = 10;
+    private static final int ELEM_W   = GUI_W - MARGIN * 2;
+    private static final int ELEM_H   = 20;
+    private static final int ROW_GAP  = 26;
+    private static final int TITLE_H  = 20;
+    private static final int BOTTOM_H = 56;
+
+    
+    private static final String LABEL_SMOOTHING = "Zoom smoothness: ";
+    private static final String LABEL_ZOOM_STEP = "Zoom step: ";
+    private static final String LABEL_SHAKE     = "Shake intensity: ";
 
     private GuiSlider smoothingSlider;
     private GuiSlider zoomStepSlider;
     private GuiSlider maxShakeSlider;
-    private GuiButton showDistanceToggle;
-    private GuiButton showFireballCountToggle;
-    private GuiButton saveButton;
-    private GuiButton resetButton;
+    private GuiButton btnShowDistance;
+    private GuiButton btnShowFireballCount;
+    private GuiButton btnSelectScope;
+    private GuiButton btnSave;
+    private GuiButton btnReset;
 
     private final Settings settings;
+    private final ScopeManager scopeManager;
 
     private boolean showDistance;
     private boolean showFireballCount;
 
-    public GuiZoomSettings(Settings settings) {
-        this.settings = settings;
+    private int guiX, guiY;
+
+    public GuiZoomSettings(Settings settings, ScopeManager scopeManager) {
+        this.settings     = settings;
+        this.scopeManager = scopeManager;
     }
 
     @Override
     public void initGui() {
-        int centerX = width / 2, centerY = height / 2;
         buttonList.clear();
+        
+        guiX = (width  - GUI_W) / 2;
+        guiY = (height - GUI_H) / 2;
+        
+        int ex = guiX + MARGIN;
+        int ey = guiY + TITLE_H + MARGIN;
 
         smoothingSlider = new GuiSlider(
-                0, centerX - 70, centerY - 90, 140, 20,
-                zoomSmoothnessLabel, "",
-                ZoomHandler.MIN_ZOOM_SMOOTHING, ZoomHandler.MAX_ZOOM_SMOOTHING, settings.getSmoothing(),
-                false,
-                true,
+                0, ex, ey, ELEM_W, ELEM_H,
+                LABEL_SMOOTHING, "",
+                ZoomHandler.MIN_ZOOM_SMOOTHING, ZoomHandler.MAX_ZOOM_SMOOTHING,
+                settings.getSmoothing(), false, true,
                 new GuiSlider.ISlider() {
-                    @Override
-                    public void onChangeSliderValue(GuiSlider slider) {
-                        slider.displayString = getSmoothingSliderDisplayString(slider.getValue());
+                    @Override public void onChangeSliderValue(GuiSlider s) {
+                        s.displayString = formatSmoothing(s.getValue());
                     }
                 }
         );
         smoothingSlider.precision = 2;
-        smoothingSlider.displayString = getSmoothingSliderDisplayString(smoothingSlider.getValue());
+        smoothingSlider.displayString = formatSmoothing(smoothingSlider.getValue());
 
         zoomStepSlider = new GuiSlider(
-                1, centerX - 70, centerY - 60, 140, 20,
-                zoomStepLabel, "",
-                ZoomHandler.MIN_ZOOM_STEP, ZoomHandler.MAX_ZOOM_STEP, settings.getZoomStep(),
-                false,
-                true,
+                1, ex, ey + ROW_GAP, ELEM_W, ELEM_H,
+                LABEL_ZOOM_STEP, "",
+                ZoomHandler.MIN_ZOOM_STEP, ZoomHandler.MAX_ZOOM_STEP,
+                settings.getZoomStep(), false, true,
                 new GuiSlider.ISlider() {
-                    @Override
-                    public void onChangeSliderValue(GuiSlider guiSlider) {
+                    @Override public void onChangeSliderValue(GuiSlider s) {
+                        s.displayString = formatZoomStep(s.getValue());
                     }
                 }
         );
+        zoomStepSlider.displayString = formatZoomStep(zoomStepSlider.getValue());
 
         maxShakeSlider = new GuiSlider(
-                2, centerX - 70, centerY - 30, 140, 20,
-                shakeIntensityLabel, "",
-                CameraShakeHandler.MIN_SHAKE, CameraShakeHandler.MAX_SHAKE, settings.getMaxShake(),
-                false,
-                true,
+                2, ex, ey + ROW_GAP * 2, ELEM_W, ELEM_H,
+                LABEL_SHAKE, "",
+                CameraShakeHandler.MIN_SHAKE, CameraShakeHandler.MAX_SHAKE,
+                settings.getMaxShake(), false, true,
                 new GuiSlider.ISlider() {
-                    @Override
-                    public void onChangeSliderValue(GuiSlider guiSlider) {
-                        guiSlider.displayString = getMaxShakeDisplayString(guiSlider.getValue());
+                    @Override public void onChangeSliderValue(GuiSlider s) {
+                        s.displayString = formatShake(s.getValue());
                     }
                 }
         );
-
         maxShakeSlider.precision = 1;
-        maxShakeSlider.displayString = getMaxShakeDisplayString(maxShakeSlider.getValue());
+        maxShakeSlider.displayString = formatShake(maxShakeSlider.getValue());
 
-        showDistance = settings.getShowDistance();
+        showDistance      = settings.getShowDistance();
         showFireballCount = settings.getShowFireballCount();
 
-        showDistanceToggle = new GuiButton(
-                3,
-                centerX - 70, centerY, 140, 20,
-                getShowDistanceDisplayString(showDistance)
-        );
+        btnShowDistance = new GuiButton(
+                3, ex, ey + ROW_GAP * 3, ELEM_W, ELEM_H,
+                formatShowDistance(showDistance));
 
-        showFireballCountToggle = new GuiButton(
-                4, centerX - 70, centerY + 30, 140, 20,
-                getShowFireballCountDisplayString(showFireballCount)
-        );
+        btnShowFireballCount = new GuiButton(
+                4, ex, ey + ROW_GAP * 4, ELEM_W, ELEM_H,
+                formatShowFireballCount(showFireballCount));
 
-        saveButton = new GuiButton(1, centerX - 40, centerY + 60, 80, 20, "Save");
-        resetButton = new GuiButton(1, centerX - 40, centerY + 90, 80, 20, "Reset");
+        btnSelectScope = new GuiButton(
+                5, ex, ey + ROW_GAP * 5, ELEM_W, ELEM_H,
+                "Select Scope: " + settings.getSelectedScope());
+
+        
+        int halfW = (ELEM_W - MARGIN) / 2;
+        int btnY  = guiY + GUI_H - BOTTOM_H + MARGIN;
+        btnSave  = new GuiButton(6, ex,                btnY, halfW, ELEM_H, "Save");
+        btnReset = new GuiButton(7, ex + halfW + MARGIN, btnY, halfW, ELEM_H, "Reset");
 
         buttonList.add(smoothingSlider);
         buttonList.add(zoomStepSlider);
         buttonList.add(maxShakeSlider);
-        buttonList.add(showDistanceToggle);
-        buttonList.add(showFireballCountToggle);
-        buttonList.add(saveButton);
-        buttonList.add(resetButton);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button == saveButton) {
-            saveSettings();
-        } else if (button == resetButton) {
-            resetSettings();
-        } else if (button == showDistanceToggle) {
-            toggleDistance();
-        } else if (button == showFireballCountToggle) {
-            toggleFireballCount();
-        }
+        buttonList.add(btnShowDistance);
+        buttonList.add(btnShowFireballCount);
+        buttonList.add(btnSelectScope);
+        buttonList.add(btnSave);
+        buttonList.add(btnReset);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
+
+        
+        drawCenteredString(fontRendererObj, "Fireball Tank Mod Settings",
+                guiX + GUI_W / 2, guiY + 6, 0xFFFFFF);
+
+        String scope = settings.getSelectedScope();
+        if (scope.length() > 15) scope = scope.substring(0, 12) + "..";
+        btnSelectScope.displayString = "Select Scope: " + scope;
+
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        if (button == btnSave) {
+            saveSettings();
+        } else if (button == btnReset) {
+            resetSettings();
+        } else if (button == btnShowDistance) {
+            showDistance = !showDistance;
+            btnShowDistance.displayString = formatShowDistance(showDistance);
+        } else if (button == btnShowFireballCount) {
+            showFireballCount = !showFireballCount;
+            btnShowFireballCount.displayString = formatShowFireballCount(showFireballCount);
+        } else if (button == btnSelectScope) {
+            mc.displayGuiScreen(new GuiScopeSelect(this, settings, scopeManager));
+        }
     }
 
     private void saveSettings() {
@@ -131,53 +167,30 @@ public class GuiZoomSettings extends GuiScreen {
         settings.setMaxShake((float) maxShakeSlider.getValue());
         settings.setShowDistance(showDistance);
         settings.setShowFireballCount(showFireballCount);
-        mc.displayGuiScreen(null);
-
         settings.save();
+        mc.displayGuiScreen(null);
     }
 
     private void resetSettings() {
         smoothingSlider.setValue(ZoomHandler.DEFAULT_ZOOM_SMOOTHING);
         zoomStepSlider.setValue(ZoomHandler.DEFAULT_ZOOM_STEP);
         maxShakeSlider.setValue(CameraShakeHandler.DEFAULT_SHAKE);
-
-        showDistance = true;
+        showDistance      = true;
         showFireballCount = true;
 
-        smoothingSlider.displayString = getSmoothingSliderDisplayString(ZoomHandler.DEFAULT_ZOOM_SMOOTHING);
-        zoomStepSlider.displayString = getZoomingStepDisplayString(ZoomHandler.DEFAULT_ZOOM_STEP);
-        maxShakeSlider.displayString = getMaxShakeDisplayString(CameraShakeHandler.DEFAULT_SHAKE);
-        showDistanceToggle.displayString = getShowDistanceDisplayString(true);
-        showFireballCountToggle.displayString = getShowFireballCountDisplayString(true);
+        smoothingSlider.displayString        = formatSmoothing(ZoomHandler.DEFAULT_ZOOM_SMOOTHING);
+        zoomStepSlider.displayString         = formatZoomStep(ZoomHandler.DEFAULT_ZOOM_STEP);
+        maxShakeSlider.displayString         = formatShake(CameraShakeHandler.DEFAULT_SHAKE);
+        btnShowDistance.displayString        = formatShowDistance(true);
+        btnShowFireballCount.displayString   = formatShowFireballCount(true);
+        settings.setSelectedScope(ScopeManager.DEFAULT_SCOPE);
+        btnSelectScope.displayString         = "Select Scope: " + ScopeManager.DEFAULT_SCOPE;
+        settings.save();
     }
 
-    private void toggleDistance() {
-        showDistance = !showDistance;
-        showDistanceToggle.displayString = getShowDistanceDisplayString(showDistance);
-    }
-
-    private void toggleFireballCount() {
-        showFireballCount = !showFireballCount;
-        showFireballCountToggle.displayString = getShowFireballCountDisplayString(showDistance);
-    }
-
-    private static String getSmoothingSliderDisplayString(double smoothness) {
-        return zoomSmoothnessLabel + String.format("%.2f", smoothness);
-    }
-
-    private static String getZoomingStepDisplayString(double zoomStep) {
-        return zoomStepLabel + String.format("%.0f", zoomStep);
-    }
-
-    private static String getMaxShakeDisplayString(double maxShake) {
-        return shakeIntensityLabel + String.format("%.1f", maxShake);
-    }
-
-    private static String getShowDistanceDisplayString(boolean showDistance) {
-        return "Show distance: " + (showDistance ? "ON" : "OFF");
-    }
-
-    private static String getShowFireballCountDisplayString(boolean showFireballCount) {
-        return "Show fireball count: " + (showFireballCount ? "ON" : "OFF");
-    }
+    private static String formatSmoothing(double v)          { return LABEL_SMOOTHING + String.format("%.2f", v); }
+    private static String formatZoomStep(double v)           { return LABEL_ZOOM_STEP + String.format("%.0f", v); }
+    private static String formatShake(double v)              { return LABEL_SHAKE     + String.format("%.1f", v); }
+    private static String formatShowDistance(boolean b)      { return "Show distance: "      + (b ? "ON" : "OFF"); }
+    private static String formatShowFireballCount(boolean b) { return "Show fireball count: " + (b ? "ON" : "OFF"); }
 }

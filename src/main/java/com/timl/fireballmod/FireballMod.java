@@ -1,5 +1,6 @@
 package com.timl.fireballmod;
 
+import static com.timl.fireballmod.FireballMod.LOGGER;
 import com.timl.fireballmod.handler.CameraShakeHandler;
 import com.timl.fireballmod.handler.ZoomHandler;
 import net.minecraftforge.common.config.Configuration;
@@ -21,7 +22,7 @@ public class FireballMod {
 
     public static final String MODID = "fireballmod";
     public static final String NAME = "Fireball Tank Mod";
-    public static final String VERSION = "1.6.1";
+    public static final String VERSION = "1.7.0";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static Settings settings;
 
@@ -43,6 +44,6 @@ public class FireballMod {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         proxy.init();
-        System.out.println(NAME + " initialized!");
+        LOGGER.info(NAME + " initialized!");
     }
 }
