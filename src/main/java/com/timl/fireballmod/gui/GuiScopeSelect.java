@@ -1,5 +1,6 @@
 package com.timl.fireballmod.gui;
 
+import static com.timl.fireballmod.FireballMod.LOGGER;
 import com.timl.fireballmod.Settings;
 import com.timl.fireballmod.scope.ScopeManager;
 import net.minecraft.client.gui.GuiButton;
@@ -12,6 +13,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -44,7 +47,7 @@ public class GuiScopeSelect extends GuiScreen {
     private int listX, listY, listW, listH, visibleRows;
     private int previewX, previewY;
 
-    private GuiButton btnSelect, btnReload, btnBack, btnScrollUp, btnScrollDown;
+    private GuiButton btnSelect, btnReload, btnBack, btnScrollUp, btnScrollDown, btnOpenFolder;
 
     public GuiScopeSelect(GuiScreen parent, Settings settings, ScopeManager scopeManager) {
         this.parent = parent;
@@ -102,11 +105,14 @@ public class GuiScopeSelect extends GuiScreen {
         btnSelect = new GuiButton(0, btnStartX, btnY, BTN_W, BTN_H, "Select");
         btnReload = new GuiButton(1, btnStartX + BTN_W + MARGIN, btnY, BTN_W, BTN_H, "Reload");
         btnBack   = new GuiButton(2, btnStartX + (BTN_W + MARGIN) * 2, btnY, BTN_W, BTN_H, "Back");
+        btnOpenFolder = new GuiButton(5, previewX, previewY + pSz + MARGIN, pSz, BTN_H, "Open Folder");
+
 
         buttonList.clear();
         buttonList.add(btnSelect);
         buttonList.add(btnReload);
         buttonList.add(btnBack);
+        buttonList.add(btnOpenFolder);
         buttonList.add(btnScrollUp);
         buttonList.add(btnScrollDown);
     }
@@ -251,6 +257,15 @@ public class GuiScopeSelect extends GuiScreen {
         } else if (button == btnScrollDown) {
             scrollOffset++;
             clampScroll();
+        } else if (button == btnOpenFolder) {
+            try {
+                File folder = ScopeManager.SCOPE_DIR;
+                if (folder.exists() && Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(folder);
+                }
+            } catch (Exception e) {
+                LOGGER.error("can not open scope directory");
+            }
         }
     }
 
